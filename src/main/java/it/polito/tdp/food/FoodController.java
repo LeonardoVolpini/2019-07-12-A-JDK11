@@ -90,6 +90,22 @@ public class FoodController {
     		this.txtResult.setText("Errore, selezionare un cibo");
     		return;
     	}
+    	String pString = this.txtPorzioni.getText();
+    	if (pString.isEmpty()) { //superfluo, basta il try e catch
+    		this.txtResult.setText("Inserire un numero di porzioni");
+    		return;
+    	}
+    	int p; 
+    	try {
+    		p=Integer.parseInt(pString);
+    	} catch(NumberFormatException e) {
+    		this.txtResult.setText("Inseire un valore numerico come numero di porzioni ");
+    		return;
+    	}
+    	if (p<0) { //eventuali altri controlli
+    		this.txtResult.setText("Inserire un numero positivo di porzioni");
+    		return;
+    	}
     	List<FoodAdiacente> elenco = model.adiacenti(food);
     	this.txtResult.appendText("Adiacenti migliori: \n");
     	int i=1;
@@ -105,6 +121,34 @@ public class FoodController {
     void doSimula(ActionEvent event) {
     	txtResult.clear();
     	txtResult.appendText("Simulazione...");
+    	if (!model.isGrafoCreato()) { 
+    		this.txtResult.setText("Prima crea il grafo!!!");
+    		return;
+    	}
+    	Food food= this.boxFood.getValue();
+    	if (food==null) {
+    		this.txtResult.setText("Errore, selezionare un cibo");
+    		return;
+    	}
+    	String kString = this.txtK.getText();
+    	if (kString.isEmpty()) { 
+    		this.txtResult.setText("Inserire un numero di stazioni");
+    		return;
+    	}
+    	int k; 
+    	try {
+    		k=Integer.parseInt(kString);
+    	} catch(NumberFormatException e) {
+    		this.txtResult.setText("Inseire un valore numerico come numero di stazioni ");
+    		return;
+    	}
+    	if (k<0 || k>10) { 
+    		this.txtResult.setText("Inserire un numero compreso tra 1 e 10 come numero di stazioni");
+    		return;
+    	}
+    	model.simula(k, food);
+    	this.txtResult.appendText("Il numero totale dei cibi preparati è di:"+model.getNumCibiPreparati()+"\n");
+    	this.txtResult.appendText("E il tempo totale impiegato è di: "+model.getTempoTotale());
     }
 
     @FXML // This method is called by the FXMLLoader when initialization is complete

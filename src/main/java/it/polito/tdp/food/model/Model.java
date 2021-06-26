@@ -18,20 +18,16 @@ public class Model {
 	private SimpleWeightedGraph<Food, DefaultWeightedEdge> grafo;
 	private FoodDao dao;
 	private Map<Integer, Food> idMap;
-	//private List<Adiacenza> adiacenze; //puo essere superfluo
 	private boolean grafoCreato;
-	//private ConnectivityInspector<Vertice, DefaultWeightedEdge> ci; //se chiede roba connessa ad un vertice
 	
-	//private List<Vertice> percorsoBest; //nel caso di ricorsione per percorso max
-	//private Integer pesoMax; //peso del percorso
+	private Simulator sim;
 	
 	public Model() {
 		this.dao = new FoodDao();
 		this.idMap= new HashMap<>();
 		this.dao.loadIdMap(idMap);
-		//this.adiacenze= new ArrayList<>();
 		this.grafoCreato=false;
-		//this.percorsoBest= new ArrayList<>(); //per ricorsione
+		this.sim= new Simulator();
 	}
 	
 	public void creaGrafo(int porzioni) {
@@ -71,4 +67,18 @@ public class Model {
 		Collections.sort(ris);
 		return ris;
 	}
+	
+	public void simula(int k, Food partenza) {
+		sim.init(k, grafo, partenza);
+		sim.run();
+	}
+	
+	public int getNumCibiPreparati() {
+		return sim.getNumCibi();
+	}
+	
+	public double getTempoTotale() {
+		return sim.getTempoTotale();
+	}
+	
 }

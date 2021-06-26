@@ -3,11 +3,18 @@ package it.polito.tdp.food.model;
 public class Food {
 	private Integer food_code;
 	private String display_name;
+	public enum Stato{
+		DA_PREPARARE,
+		PREPARAZIONE_IN_CORSO,
+		PREPARAZIONE_FINITA;
+	}
+	private Stato stato;
 	
 	public Food(Integer food_code, String display_name) {
 		super();
 		this.food_code = food_code;
 		this.display_name = display_name;
+		this.stato=Stato.DA_PREPARARE;
 	}
 	
 	public Integer getFood_code() {
@@ -51,6 +58,14 @@ public class Food {
 	@Override
 	public String toString() {
 		return display_name;
+	}
+
+	public Stato getStato() {
+		return stato;
+	}
+
+	public void setStato(Stato stato) {
+		this.stato = stato;
 	}
 
 	

@@ -5,8 +5,11 @@
 package it.polito.tdp.food;
 
 import java.net.URL;
+import java.util.List;
 import java.util.ResourceBundle;
 
+import it.polito.tdp.food.model.Food;
+import it.polito.tdp.food.model.FoodAdiacente;
 import it.polito.tdp.food.model.Model;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -41,7 +44,7 @@ public class FoodController {
     private Button btnSimula; // Value injected by FXMLLoader
 
     @FXML // fx:id="boxFood"
-    private ComboBox<?> boxFood; // Value injected by FXMLLoader
+    private ComboBox<Food> boxFood; // Value injected by FXMLLoader
 
     @FXML // fx:id="txtResult"
     private TextArea txtResult; // Value injected by FXMLLoader
@@ -50,12 +53,52 @@ public class FoodController {
     void doCreaGrafo(ActionEvent event) {
     	txtResult.clear();
     	txtResult.appendText("Creazione grafo...");
+    	String pString = this.txtPorzioni.getText();
+    	if (pString.isEmpty()) { //superfluo, basta il try e catch
+    		this.txtResult.setText("Inserire un numero minimo max di porzioni");
+    		return;
+    	}
+    	int p; //o int o float...
+    	try {
+    		p=Integer.parseInt(pString);
+    	} catch(NumberFormatException e) {
+    		this.txtResult.setText("Inseire un valore numerico come numero max di porzioni ");
+    		return;
+    	}
+    	if (p<0) { //eventuali altri controlli
+    		this.txtResult.setText("Inserire un numero positivo come numero max di porzioni");
+    		return;
+    	}
+    	this.model.creaGrafo(p);
+    	this.txtResult.setText("GRAFO CREATO:\n");
+    	this.txtResult.appendText("# Vertici: "+model.getNumVertici() );
+    	this.txtResult.appendText("\n# Archi: "+model.getNumArchi() );
+    	this.boxFood.getItems().clear(); //pulisco le varie comboBox dipendenti dal grafo
+    	this.boxFood.getItems().addAll(model.getVertici()); //creo le varie comboBox dipendenti dal grafo
     }
     
     @FXML
     void doCalorie(ActionEvent event) {
     	txtResult.clear();
     	txtResult.appendText("Analisi calorie...");
+    	if (!model.isGrafoCreato()) {
+    		this.txtResult.setText("Errore, creare prima il grafo");
+    		return;
+    	}
+    	Food food= this.boxFood.getValue();
+    	if (food==null) {
+    		this.txtResult.setText("Errore, selezionare un cibo");
+    		return;
+    	}
+    	List<FoodAdiacente> elenco = model.adiacenti(food);
+    	this.txtResult.appendText("Adiacenti migliori: \n");
+    	int i=1;
+    	for (FoodAdiacente f : elenco) {
+    		if (i==5)
+    			break;
+    		this.txtResult.appendText(f.getFood().getDisplay_name()+" "+f.getPeso()+"\n");
+    		i++;
+    	}
     }
 
     @FXML

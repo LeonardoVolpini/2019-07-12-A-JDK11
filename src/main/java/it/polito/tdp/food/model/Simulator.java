@@ -41,6 +41,8 @@ public class Simulator {
 		for (int i=1; i<=k; i++)
 			stazioni.add(new Stazione(i,null,true));
 		this.queue= new PriorityQueue<>();
+		for (Food f : grafo.vertexSet())
+			f.setStato(Stato.DA_PREPARARE);
 		
 		this.numCibi=0;
 		this.tempoTotale=0.0;
